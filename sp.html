@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorteio</title>
+    <style>
+        .checkbox-group input[type="checkbox"] + label {
+        font-size: 22px;
+        }
+
+	form {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .checkbox-group label {
+            flex: 2;
+            margin: 5px;
+            text-align: center;
+            padding: 18px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            border-radius: 14px;
+            cursor: pointer;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            display: none;
+        }
+
+	.nomeCheckboxLabel {
+        font-size: 20px;
+        }
+
+        .checkbox-group input[type="checkbox"]:checked + label {
+            background-color: #2caf50;
+            color: white;
+        }
+
+        button {
+            margin-top: 10px;
+            padding: 14px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            font-size: 19px;
+            transition: background-color 0.9s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        button:active {
+            background-color: #367b34;
+        }
+
+        #realizarSorteioBtn {
+            background-color: #3498db;
+	    font-size: 28px;
+            color: #fff;
+        }
+
+        #realizarSorteioContainer {
+        text-align: center; /* Centraliza o botão "Realizar Sorteio" */
+        margin-top: 20px;
+        }
+
+        #realizarSorteioBtn:hover {
+            background-color: #2980b9;
+        }
+
+        #realizarSorteioBtn:active {
+            background-color: #1f618d;
+        }
+
+        table {
+         width: 80%;
+         margin: 0 auto; /* Adiciona margem automática para centralizar */
+         border-collapse: collapse;
+         margin-top: 4px;
+         font-family: 'Arial', sans-serif;
+         text-align: center;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 15px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h2 lang="pt-BR"><center>Sorteio Sao Paulo</center></h2>
+
+    <form id="sorteioForm" text-align: center;>
+	
+        <label for="nomesInput">Selecione os nomes para o sorteio:</label>
+        <div id="nomesCheckboxDiv"></div>
+        <br><br>
+
+        <label>Selecione os lugares que serao utilizados:</label>
+        <div class="checkbox-group">
+            <input type="checkbox" id="Altar" name="local" value="Altar" checked>
+            <label for="Altar">Altar</label>
+
+            <input type="checkbox" id="Frente" name="local" value="Frente" checked>
+            <label for="Frente">Frente</label>
+
+            <input type="checkbox" id="Fundo" name="local" value="Fundo" checked>
+            <label for="Fundo">Fundo</label>
+
+            <input type="checkbox" id="Vestiario" name="local" value="Vestiario" checked>
+            <label for="Vestiario">Vestiario</label>
+
+            <input type="checkbox" id="Estoque" name="local" value="Estoque" checked>
+            <label for="Estoque">Estoque</label>
+        </div>
+
+        <button type="button" id="realizarSorteioBtn" onclick="realizarSorteio()">Realizar Sorteio</button>
+    </form>
+
+    <h3><center>Resultado do Sorteio</center></h3>
+    <div id="resultadoDiv"></div>
+
+    <script>
+	        // Função para obter a data e hora atual
+        function obterTimestamp() {
+            var dataHoraAtual = new Date();
+            var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', timeZoneName: 'short' };
+            var timestamp = dataHoraAtual.toLocaleDateString('pt-BR', options);
+            
+            // Exibe o timestamp no elemento com id "timestamp"
+            document.getElementById("timestamp").textContent = timestamp;
+        }
+
+        // Adiciona um ouvinte de eventos para chamar a função ao carregar a página
+        window.addEventListener('load', obterTimestamp);
+
+       
+
+
+
+
+
+        // Função para obter os nomes do servidor e criar checkboxes
+        function obterNomes() {
+            var nomesCheckboxDiv = document.getElementById("nomesCheckboxDiv");
+
+            // Fazer uma solicitação para obter os nomes do servidor
+            fetch('nomes.txt')
+                .then(response => response.text())
+                .then(data => {
+                    var nomes = data.split('\n').map(function(item) {
+                        return item.trim();
+                    });
+
+                    nomes.forEach(function(nome) {
+                        var checkbox = document.createElement("input");
+                        checkbox.type = "checkbox";
+                        checkbox.name = "nomeCheckbox";
+                        checkbox.value = nome;
+                        checkbox.checked = false; // Agora, por padrão, os nomes não estarão selecionados
+
+                        var label = document.createElement("label");
+                        label.appendChild(document.createTextNode(nome));
+                        label.classList.add("nomeCheckboxLabel"); // Adiciona a classe para estilização específica			
+
+                        nomesCheckboxDiv.appendChild(checkbox);
+                        nomesCheckboxDiv.appendChild(label);
+                        nomesCheckboxDiv.appendChild(document.createElement("br"));
+                    });
+                })
+                .catch(error => console.error('Erro ao obter os nomes:', error));
+        }
+
+        // Chamar a função para carregar os nomes ao carregar a página
+        window.onload = obterNomes;
+
+
+
+
+
+
+
+
+
+
+
+function realizarSorteio() {
+    var nomesCheckbox = document.getElementsByName("nomeCheckbox");
+    var nomes = [];
+
+    for (var i = 0; i < nomesCheckbox.length; i++) {
+        if (nomesCheckbox[i].checked) {
+            nomes.push(nomesCheckbox[i].value);
+        }
+    }
+
+    var lugares = [];
+    var checkboxesLugares = document.getElementsByName("local");
+    for (var j = 0; j < checkboxesLugares.length; j++) {
+        if (checkboxesLugares[j].checked) {
+            lugares.push(checkboxesLugares[j].value);
+        }
+    }
+
+    if (nomes.length > 0 && lugares.length > 0) {
+        nomes = shuffleArray(nomes);
+
+        var distribuicao = {};
+        for (var k = 0; k < nomes.length; k++) {
+            var lugarIndex = k % lugares.length;
+            var nome = nomes[k];
+            var lugar = lugares[lugarIndex];
+
+            if (!distribuicao[lugar]) {
+                distribuicao[lugar] = [];
+            }
+
+            // Verifica se o lugar é "Estoque" e se já foi selecionado
+            if (lugar === 'Estoque' && distribuicao[lugar].length > 0) {
+                continue; // Pula o participante se o lugar já foi selecionado
+            }
+
+            if (lugar === 'Estoque' && distribuicao[lugar].length === 0) {
+                distribuicao[lugar].push(nome);
+            } else {
+                distribuicao[lugar].push(nome);
+            }
+        }
+
+        exibirResultadoComoTabela(distribuicao);
+    } else {
+        document.getElementById("resultadoDiv").innerHTML = "<p>Por favor, selecione pelo menos um nome e um lugar.</p>";
+    }
+}
+
+
+
+
+
+
+
+        // Função para exibir o resultado em uma tabela bonita
+     
+        function exibirResultadoComoTabela(distribuicao) {
+            var resultadoDiv = document.getElementById("resultadoDiv");
+            resultadoDiv.innerHTML = ''; // Limpar a div
+
+            var table = document.createElement("table");
+
+            // Cabeçalho da tabela
+            var thead = document.createElement("thead");
+            var headerRow = document.createElement("tr");
+
+            var thLugar = document.createElement("th");
+            thLugar.textContent = "Lugar";
+            headerRow.appendChild(thLugar);
+
+            var thParticipantes = document.createElement("th");
+            thParticipantes.textContent = "Participantes";
+            headerRow.appendChild(thParticipantes);
+
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+
+            // Linhas da tabela
+            for (var lugar in distribuicao) {
+                var participantes = distribuicao[lugar];
+
+                var row = document.createElement("tr");
+
+                var tdLugar = document.createElement("td");
+                tdLugar.textContent = lugar;
+                row.appendChild(tdLugar);
+
+                var tdParticipantes = document.createElement("td");
+                tdParticipantes.textContent = participantes.join(", ");
+                row.appendChild(tdParticipantes);
+
+                table.appendChild(row);
+		obterTimestamp();
+            }
+
+            resultadoDiv.appendChild(table);
+        }
+
+        function shuffleArray(array) {
+            for (var i = array.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var temp = array[i];
+                array[i] = array[j];
+                array[j] = temp;
+            }
+            return array;
+            // Após realizar o sorteio, atualize o timestamp
+            
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </script>
+
+    <footer>
+	<center><p id="timestamp"></p> <!-- Elemento para exibir o timestamp --></center>
+        <p><center>-----------------------------------------</center></p>
+	<p><center><a href="http://www.sorteio.free.nf/sp.html">Sorteio Sao Paulo</a></center></p>
+	<p><center><a href="http://www.sorteio.free.nf/ma.html">Sorteio Mairipora</a></center></p>
+    </footer>
+
+
+           
+
+</body>
+</html>
+

@@ -71,7 +71,7 @@
         }
 
         #realizarSorteioContainer {
-        text-align: center; /* Centraliza o botão "Realizar Sorteio" */
+        text-align: center; /* Centraliza o botï¿½o "Realizar Sorteio" */
         margin-top: 20px;
         }
 
@@ -85,7 +85,7 @@
 
         table {
          width: 80%;
-         margin: 0 auto; /* Adiciona margem automática para centralizar */
+         margin: 0 auto; /* Adiciona margem automï¿½tica para centralizar */
          border-collapse: collapse;
          margin-top: 10px;
          font-family: 'Arial', sans-serif;
@@ -141,7 +141,7 @@
     <div id="resultadoDiv"></div>
 
     <script>
-	        // Função para obter a data e hora atual
+	        // Funï¿½ï¿½o para obter a data e hora atual
         function obterTimestamp() {
             var dataHoraAtual = new Date();
             var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', second: 'numeric', timeZoneName: 'short' };
@@ -151,7 +151,7 @@
             document.getElementById("timestamp").textContent = timestamp;
         }
 
-        // Adiciona um ouvinte de eventos para chamar a função ao carregar a página
+        // Adiciona um ouvinte de eventos para caaaahamar a fu ao carregar a pï¿½gina
         window.addEventListener('load', obterTimestamp);
 
        
@@ -160,11 +160,11 @@
 
 
 
-        // Função para obter os nomes do servidor e criar checkboxes
+        // Funï¿½ï¿½o para obter os nomes do servidor e criar checkboxes
         function obterNomes() {
             var nomesCheckboxDiv = document.getElementById("nomesCheckboxDiv");
 
-            // Fazer uma solicitação para obter os nomes do servidor
+            // Fazer uma solicitaï¿½ï¿½o para obter os nomes do servidor
             fetch('nomes.txt')
                 .then(response => response.text())
                 .then(data => {
@@ -177,11 +177,11 @@
                         checkbox.type = "checkbox";
                         checkbox.name = "nomeCheckbox";
                         checkbox.value = nome;
-                        checkbox.checked = false; // Agora, por padrão, os nomes não estarão selecionados
+                        checkbox.checked = false; // Agora, por padrï¿½o, os nomes nï¿½o estarï¿½o selecionados
 
                         var label = document.createElement("label");
                         label.appendChild(document.createTextNode(nome));
-                        label.classList.add("nomeCheckboxLabel"); // Adiciona a classe para estilização específica			
+                        label.classList.add("nomeCheckboxLabel"); // Adiciona a classe para estilizaï¿½ï¿½o especï¿½fica			
 
                         nomesCheckboxDiv.appendChild(checkbox);
                         nomesCheckboxDiv.appendChild(label);
@@ -191,7 +191,7 @@
                 .catch(error => console.error('Erro ao obter os nomes:', error));
         }
 
-        // Chamar a função para carregar os nomes ao carregar a página
+        // Chamar a funï¿½ï¿½o para carregar os nomes ao carregar a pï¿½gina
         window.onload = obterNomes;
 
 
@@ -231,7 +231,7 @@ function realizarSorteio() {
 
         var distribuicao = {};
 
-        // Mapeia a quantidade de nomes já atribuídos ao "Estoque"
+        // Mapeia a quantidade de nomes jï¿½ atribuï¿½dos ao "Estoque"
         var estoqueCount = 0;
 
         for (var k = 0; k < nomes.length; k++) {
@@ -244,7 +244,7 @@ function realizarSorteio() {
             }
 
             if (lugar === 'Estoque' && estoqueCount >= 1) {
-                // Se o "Estoque" já tiver um nome, não atribuir mais
+                // Se o "Estoque" jï¿½ tiver um nome, nï¿½o atribuir mais
                 continue;
             }
 
@@ -284,7 +284,7 @@ function realizarSorteio() {
 
 
 
-        // Função para exibir o resultado em uma tabela bonita
+        // Funï¿½ï¿½o para exibir o resultado em uma tabela bonita
      
         function exibirResultadoComoTabela(distribuicao) {
             var resultadoDiv = document.getElementById("resultadoDiv");
@@ -292,7 +292,7 @@ function realizarSorteio() {
 
             var table = document.createElement("table");
 
-            // Cabeçalho da tabela
+            // Cabeï¿½alho da tabela
             var thead = document.createElement("thead");
             var headerRow = document.createElement("tr");
 
@@ -336,7 +336,7 @@ function realizarSorteio() {
                 array[j] = temp;
             }
             return array;
-            // Após realizar o sorteio, atualize o timestamp
+            // Apï¿½s realizar o sorteio, atualize o timestamp
             
 
         }
